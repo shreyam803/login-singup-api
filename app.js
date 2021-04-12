@@ -19,6 +19,8 @@ app.get('/login',(req,res)=>{
 
 app.post('/login',async (req,res)=>{
     const user = await User.findOne({ email: req.body.email });
+    console.log(user);
+    
   
 });
 
@@ -27,18 +29,18 @@ app.get('/register',(req,res)=>{
 })
 
 app.post('/register',async (req,res)=>{
-    try{    const hashedPassword = await bcrypt.hash(req.body.password,10)
+    try{    const hashedPassword = await bcrypt.hash(req.body.password,10);
            const user = new User({
                name:req.body.name,
-               email:req.body,email,
+               email:req.body.email,
                password:hashedPassword
            })
            const userCreated = await user.save();
-           res.status(201).redirect('/login');
+           res.status(201).send('User created successfully..!');
            console.log(user);
     }
     catch(e){
-            res.status(400).send(e);
+            res.status(400).send("Unable to register");
     }
 })
  

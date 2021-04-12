@@ -1,8 +1,11 @@
+require('dotenv').config();
+
 const express = require("express");
 const app = express();
 require('./db/db');
 const User = require("./models/user")
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const port = process.env.PORT || 3000;
 app.set('view-engine', 'ejs');
@@ -30,7 +33,15 @@ app.post('/login', async (req, res) => {
             res.status(400).send('Unable to login.');
         }
 
-        res.status(200).send('Logged in successfully.');
+       // res.status(200).send('Logged in successfully.');
+
+        const token = jwt.sign({
+            name: req.body.name
+        },process.env.JWT_SECRET_KEY);
+
+        console.log(token);
+
+        res.json({ user, token });
 
     }
     catch (e) {
@@ -53,7 +64,13 @@ app.post('/register', async (req, res) => {
         })
         const userCreated = await user.save();
 
-        res.status(201).send('User created successfully..!');
+       // res.status(201).send('User created successfully..!');
+
+        const token = jwt.sign({
+            name: req.body.name
+        },process.env.JWT_SECRET_KEY);
+
+        res.json({user, token });
 
     }
     catch (e) {
